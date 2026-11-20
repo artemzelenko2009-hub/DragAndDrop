@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Переміщення об'єктів</title>
+
+    <style>
+        /* Стилі сторінки */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 25px;
+        }
+
+        /* Робоча область для об'єктів */
+        #workspace {
+            position: relative;
+            width: 90%;
+            height: 500px;
+            margin: 20px auto;
+            background-color: white;
+            border: 3px solid #555;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* Загальні стилі об'єктів */
+        .object {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+        }
+
+        /* Червоне коло */
+        #circle {
+            background-color: red;
+            border-radius: 50%;
+            left: 50px;
+            top: 50px;
+        }
+
+        /* Синій квадрат */
+        #square {
+            background-color: blue;
+            left: 200px;
+            top: 50px;
+        }
+
+        /* Зелений трикутник */
+        #triangle {
+            background-color: green;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            left: 350px;
+            top: 50px;
+        }
+
+        /* Курсор під час переміщення */
+        .object:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Переміщення трьох об'єктів</h1>
+    <p>Натисніть на фігуру та перетягніть її мишкою!</p>
+
+    <!-- Робоча область -->
+    <div id="workspace">
+
+        <!-- Червоне коло -->
+        <div class="object" id="circle"></div>
+
+        <!-- Синій квадрат -->
+        <div class="object" id="square"></div>
+
+        <!-- Зелений трикутник -->
+        <div class="object" id="triangle"></div>
+
+    </div>
+
+    <script>
+        // Отримуємо робочу область
+        const workspace = document.getElementById("workspace");
+
+        // Знаходимо всі три об'єкти
+        const objects = document.querySelectorAll(".object");
+
+        // Перебираємо кожен об'єкт
+        objects.forEach(function(object) {
+
+            // Змінні для збереження координат
+            let shiftX = 0;
+            let shiftY = 0;
+
+            // Початок переміщення об'єкта
+            object.addEventListener("pointerdown", function(event) {
+
+                // Запам'ятовуємо початкове положення курсора
+                const rect = object.getBoundingClientRect();
+
+                shiftX = event.clientX - rect.left;
+                shiftY = event.clientY - rect.top;
+
+                // Захоплюємо курсор для об'єкта
+                object.setPointerCapture(event.pointerId);
+
+            });
+
+            // Переміщення об'єкта
+            object.addEventListener("pointermove", function(event) {
+
+                // Перевіряємо, чи натиснута кнопка миші
+                if (!object.hasPointerCapture(event.pointerId)) {
+                    return;
+                }
+
+                // Отримуємо координати робочої області
+                const area = workspace.getBoundingClientRect();
+
+                // Обчислюємо нові координати
+                let x = event.clientX - area.left - shiftX;
+                let y = event.clientY - area.top - shiftY;
+
+                // Обмежуємо переміщення межами області
+                x = Math.max(0, Math.min(
+                    x, workspace.clientWidth - object.offsetWidth
+                ));
+
+                y = Math.max(0, Math.min(
+                    y, workspace.clientHeight - object.offsetHeight
+                ));
+
+                // Змінюємо положення об'єкта
+                object.style.left = x + "px";
+                object.style.top = y + "px";
+
+            });
+
+        });
+    </script>
+
+</body>
+</html>
