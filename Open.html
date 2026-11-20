@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Code</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 24px;
+            background-color: #000000;
+        }
+
+        .login-box {
+            box-sizing: border-box;
+            width: 300px;
+            min-height: 230px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border: 0px solid black;
+            color: black;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 22px;
+            color: black;
+            margin: 0 0 15px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            color: black;
+        }
+
+        input {
+            box-sizing: border-box;
+            width: 100%;
+            margin-top: 5px;
+            padding: 6px;
+        }
+
+        button {
+            display: block;
+            margin: 12px 0 0 auto;
+            padding: 6px 10px;
+        }
+
+        #name-check {
+            display: block;
+            min-height: 20px;
+            margin-top: 8px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>Введіть логін і пароль</h1>
+
+        <label for="name">Login:</label>
+        <input type="password" id="name" name="name">
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password">
+
+        <button type="button" id="confirm">Підтвердити</button>
+        <span id="name-check" aria-live="polite"></span>
+    </div>
+
+    <script>
+        const nameInput = document.getElementById("name");
+        const passwordInput = document.getElementById("password");
+        const nameCheck = document.getElementById("name-check");
+        const confirmButton = document.getElementById("confirm");
+        const expectedName = "zelya";
+        const expectedPassword = "zelya";
+
+        function checkNameMatch() {
+            const currentName = nameInput.value.trim();
+            const currentPassword = passwordInput.value;
+
+            if (currentName === expectedName && currentPassword === expectedPassword) {
+                nameCheck.textContent = "✓";
+                nameCheck.style.color = "green";
+                confirmButton.disabled = false;
+                return true;
+            }
+
+            nameCheck.textContent = "Перевірте логін і пароль";
+            nameCheck.style.color = "red";
+            confirmButton.disabled = true;
+            return false;
+        }
+
+        nameInput.addEventListener("input", checkNameMatch);
+        passwordInput.addEventListener("input", checkNameMatch);
+
+        confirmButton.addEventListener("click", () => {
+            if (checkNameMatch()) {
+                window.location.href = "file:///C:/Users/artem/Desktop/zelya.html";
+            }
+        });
+
+        confirmButton.disabled = true;
+    </script>
+</body>
+</html>
+    
