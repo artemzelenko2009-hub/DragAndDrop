@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Переміщення об'єктів</title>
+
+    <style>
+        /* Оформлення сторінки */
+        body {
+            font-family: Arial;
+            text-align: center;
+            background-color: #eeeeee;
+        }
+
+        h1 {
+            color: #333333;
+        }
+
+        /* Робоча область */
+        #workspace {
+            position: relative;
+            width: 90%;
+            height: 500px;
+            margin: 20px auto;
+            background-color: white;
+            border: 3px solid black;
+            overflow: hidden;
+        }
+
+        /* Загальні властивості об'єктів */
+        .object {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+        }
+
+        /* Червоне напівпрозоре коло */
+        #circle {
+            background-color: rgba(255, 0, 0, 0.5);
+            border-radius: 50%;
+            left: 50px;
+            top: 50px;
+        }
+
+        /* Синій напівпрозорий квадрат */
+        #square {
+            background-color: rgba(0, 0, 255, 0.5);
+            left: 200px;
+            top: 50px;
+        }
+
+        /* Зелений напівпрозорий трикутник */
+        #triangle {
+            background-color: rgba(0, 255, 0, 0.5);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            left: 350px;
+            top: 50px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <h1>Переміщення трьох об'єктів</h1>
+    <p>Перетягуйте фігури за допомогою миші!</p>
+
+    <!-- Робоча область -->
+    <div id="workspace">
+
+        <!-- Перше коло -->
+        <div class="object" id="circle"></div>
+
+        <!-- Другий квадрат -->
+        <div class="object" id="square"></div>
+
+        <!-- Третій трикутник -->
+        <div class="object" id="triangle"></div>
+
+    </div>
+
+    <script>
+
+        // Отримуємо робочу область
+        const workspace = document.getElementById("workspace");
+
+        // Отримуємо всі три об'єкти
+        const objects = document.querySelectorAll(".object");
+
+        // Перебираємо всі об'єкти
+        objects.forEach(function(object) {
+
+            let shiftX = 0;
+            let shiftY = 0;
+
+            // Натискання на об'єкт
+            object.addEventListener("pointerdown", function(event) {
+
+                const rect = object.getBoundingClientRect();
+
+                shiftX = event.clientX - rect.left;
+                shiftY = event.clientY - rect.top;
+
+                object.setPointerCapture(event.pointerId);
+
+            });
+
+            // Переміщення об'єкта
+            object.addEventListener("pointermove", function(event) {
+
+                if (!object.hasPointerCapture(event.pointerId)) {
+                    return;
+                }
+
+                // Координати робочої області
+                const area = workspace.getBoundingClientRect();
+
+                // Нові координати об'єкта
+                let x = event.clientX - area.left - shiftX;
+                let y = event.clientY - area.top - shiftY;
+
+                // Обмеження руху по горизонталі
+                x = Math.max(0, Math.min(
+                    x, workspace.clientWidth - object.offsetWidth
+                ));
+
+                // Обмеження руху по вертикалі
+                y = Math.max(0, Math.min(
+                    y, workspace.clientHeight - object.offsetHeight
+                ));
+
+                // Зміна положення об'єкта
+                object.style.left = x + "px";
+                object.style.top = y + "px";
+
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>
